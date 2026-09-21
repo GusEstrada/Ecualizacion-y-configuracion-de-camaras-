@@ -51,15 +51,6 @@ Guarda foto de la mejor (`diagnostico_cam<N>.png`).
 (abre pero negro). Cierra Teams/Zoom/navegador antes de correrlo, la cámara
 es exclusiva en Windows.
 
-### `ver_cam_control.py` — visor simple (legacy)
-
-```
-python ver_cam_control.py
-```
-
-Una sola cámara (índice 1) con trackbars de OpenCV para Exposure/Brightness/
-Contrast. Versión anterior al panel numérico; se conserva de referencia.
-
 ## Archivos que genera
 
 - `pruebas_cam/prueba_N.png` + `.txt` — evidencias del ajuste.
