@@ -6,11 +6,18 @@ ajusta aquí, no en el programa principal.
 
 Autor: Gustavo Estrada — 21 sep 2026
 
-## Requisitos
+## Requisitos e instalación
+
+Necesitas Python 3.10 o superior. Clona el repo e instala dependencias:
 
 ```
-pip install opencv-contrib-python numpy pygame
+git clone https://github.com/GusEstrada/Ecualizacion-y-configuracion-de-camaras-.git
+cd Ecualizacion-y-configuracion-de-camaras-
+pip install -r requirements.txt
 ```
+
+Eso instala `opencv-contrib-python` (con el módulo aruco), `numpy` y
+`pygame` para la interfaz.
 
 ## El bueno: `test_cam_controls.py`
 
