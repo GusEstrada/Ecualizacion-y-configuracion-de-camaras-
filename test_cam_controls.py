@@ -40,6 +40,9 @@ ANCHO, ALTO = 1280, 760
 BARRA_LAT = 330
 VW, VH = 452, 339  # cada vista de camara
 
+# Indices reales: la integrada es la 1 y se esquiva.
+CAMS = (0, 2)
+
 PROPS = [
     ("Exposure", cv2.CAP_PROP_EXPOSURE, -13.0, 0.0, -4.0, 1.0),
     ("Brightness", cv2.CAP_PROP_BRIGHTNESS, -100.0, 100.0, 0.0, 5.0),
@@ -66,7 +69,7 @@ class Campo:
         try:
             v = float(self.texto)
         except ValueError:
-            mensajes.append(f"cam{self.cap_idx} {self.nombre}: '{self.texto}' no es numero")
+            mensajes.append(f"cam{CAMS[self.cap_idx]} {self.nombre}: '{self.texto}' no es numero")
             return
         v = self.recortar(v)
         self.texto = str(round(v, 3))
@@ -75,7 +78,7 @@ class Campo:
             cap.set(self.prop, v)
             self.leido = cap.get(self.prop)
         else:
-            mensajes.append(f"cam{self.cap_idx} no responde")
+            mensajes.append(f"cam{CAMS[self.cap_idx]} no responde")
 
 
 def abrir_cam(idx):
@@ -146,14 +149,14 @@ def tomar_foto(frames, campos):
         fr = frames[i]
         if fr is None:
             fr = np.zeros((480, 640, 3), np.uint8)
-            cv2.putText(fr, f"cam{i}: sin senal", (20, 240),
+            cv2.putText(fr, f"cam{CAMS[i]}: sin senal", (20, 240),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
             tira = np.full((90, 640, 3), 255, np.uint8)
             cv2.putText(tira, "sin histograma", (8, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (62, 32, 32), 1)
             stats.append((0.0, 0.0))
         else:
-            cv2.putText(fr, f"cam{i}", (10, 30),
+            cv2.putText(fr, f"cam{CAMS[i]}", (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
             tira, negro, quemado = hist_strip(fr)
             stats.append((negro, quemado))
@@ -163,9 +166,9 @@ def tomar_foto(frames, campos):
     cv2.imwrite(ruta, panel)
     lineas = [f"prueba_{n}  {time.strftime('%Y-%m-%d %H:%M:%S')}"]
     for i, (negro, quemado) in enumerate(stats):
-        lineas.append(f"cam{i} histograma: negro {negro:.1f}%  quemado {quemado:.1f}%")
+        lineas.append(f"cam{CAMS[i]} histograma: negro {negro:.1f}%  quemado {quemado:.1f}%")
     for c in campos:
-        lineas.append(f"cam{c.cap_idx} {c.nombre}: pedido {c.texto}  real {c.leido}")
+        lineas.append(f"cam{CAMS[c.cap_idx]} {c.nombre}: pedido {c.texto}  real {c.leido}")
     with open(os.path.join(CARPETA_PRUEBAS, f"prueba_{n}.txt"), "w", encoding="utf-8") as f:
         f.write("\n".join(lineas) + "\n")
     return ruta
@@ -183,7 +186,7 @@ def main():
     f_chico = pygame.font.SysFont(FAM, 11)
     mono = pygame.font.SysFont(FAM_MONO, 13)
 
-    caps = [abrir_cam(0), abrir_cam(1)]
+    caps = [abrir_cam(c) for c in CAMS]
     # No fuerzo Exposure/Brightness/Contrast al abrir: en la integrada
     # un exposure agresivo la deja negra. Se leen los valores del driver.
 
@@ -262,8 +265,8 @@ def main():
                     pantalla.blit(f.render(f"quemada {quemado:.0f}%: baja Exposure",
                                            True, ROJO), (cx0 + 12, 80 + VH + 84))
             else:
-                pantalla.blit(f.render(f"cam{i}: NO responde", True, ROJO), (cx0 + 20, 80 + VH // 2))
-            etiqueta = f"cam{i}: {'OK' if ok else 'sin senal'}"
+                pantalla.blit(f.render(f"cam{CAMS[i]}: NO responde", True, ROJO), (cx0 + 20, 80 + VH // 2))
+            etiqueta = f"cam{CAMS[i]}: {'OK' if ok else 'sin senal'}"
             pygame.draw.rect(pantalla, (0, 0, 0), (cx0 + 8, 86, 150, 22), border_radius=5)
             pantalla.blit(f_bold.render(etiqueta, True, (0, 255, 0) if ok else (0, 0, 255)),
                           (cx0 + 14, 89))
@@ -276,7 +279,7 @@ def main():
 
         y = 48
         for idx in (0, 1):
-            pantalla.blit(f_sec.render(f"CAM {idx}", True, TINTA), (bx + 20, y))
+            pantalla.blit(f_sec.render(f"CAM {CAMS[idx]}", True, TINTA), (bx + 20, y))
             y += 26
             for c in [c for c in campos if c.cap_idx == idx]:
                 pantalla.blit(f.render(c.nombre, True, TINTA_SUAVE), (bx + 20, y + 5))
