@@ -40,8 +40,8 @@ ANCHO, ALTO = 1280, 760
 BARRA_LAT = 330
 VW, VH = 452, 339  # cada vista de camara
 
-# Indices reales: la integrada es la 1 y se esquiva.
-CAMS = (0, 2)
+# Indices de las dos camaras USB externas; la HP integrada es la 1.
+CAMS = (0, 3)
 
 PROPS = [
     ("Exposure", cv2.CAP_PROP_EXPOSURE, -13.0, 0.0, -4.0, 1.0),
@@ -131,12 +131,13 @@ def hist_strip(frame, w=640, h=90):
 def siguiente_indice():
     os.makedirs(CARPETA_PRUEBAS, exist_ok=True)
     n = 0
-    for f in os.listdir(CARPETA_PRUEBAS):
-        if f.startswith("prueba_") and f.endswith(".png"):
-            try:
-                n = max(n, int(f[len("prueba_"):-len(".png")]))
-            except ValueError:
-                pass
+    for raiz, _, archivos in os.walk(CARPETA_PRUEBAS):
+        for f in archivos:
+            if f.startswith("prueba_") and f.endswith(".png"):
+                try:
+                    n = max(n, int(f[len("prueba_"):-len(".png")]))
+                except ValueError:
+                    pass
     return n + 1
 
 
@@ -161,9 +162,15 @@ def tomar_foto(frames, campos):
             tira, negro, quemado = hist_strip(fr)
             stats.append((negro, quemado))
         vistas.append(cv2.vconcat([cv2.resize(fr, (640, 480)), tira]))
-    panel = cv2.hconcat(vistas)
-    ruta = os.path.join(CARPETA_PRUEBAS, f"prueba_{n}.png")
-    cv2.imwrite(ruta, panel)
+    rutas = []
+    for i, vista in enumerate(vistas):
+        carpeta_cam = os.path.join(CARPETA_PRUEBAS, f"cam_{CAMS[i]}")
+        os.makedirs(carpeta_cam, exist_ok=True)
+        ruta_cam = os.path.join(carpeta_cam, f"prueba_{n}.png")
+        cv2.imwrite(ruta_cam, vista)
+        rutas.append(ruta_cam)
+
+    ruta = rutas[0]
     lineas = [f"prueba_{n}  {time.strftime('%Y-%m-%d %H:%M:%S')}"]
     for i, (negro, quemado) in enumerate(stats):
         lineas.append(f"cam{CAMS[i]} histograma: negro {negro:.1f}%  quemado {quemado:.1f}%")

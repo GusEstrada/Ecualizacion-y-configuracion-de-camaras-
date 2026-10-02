@@ -1,9 +1,9 @@
-prueba_24  2026-09-22 13:05:43
-cam0 histograma: negro 0.8%  quemado 6.8%
-cam2 histograma: negro 0.8%  quemado 6.8%
-cam0 Exposure: pedido -4.0  real -1.0
-cam0 Brightness: pedido 64.0  real -1.0
-cam0 Contrast: pedido 64  real -1.0
-cam2 Exposure: pedido -4.0  real -1.0
-cam2 Brightness: pedido 64  real -1.0
-cam2 Contrast: pedido 64  real -1.0
+prueba_24  2026-10-02 12:42:07
+cam0 histograma: negro 6.6%  quemado 40.6%
+cam3 histograma: negro 5.4%  quemado 44.1%
+cam0 Exposure: pedido 0.0  real -1.0
+cam0 Brightness: pedido 30.0  real 30.0
+cam0 Contrast: pedido 100.0  real 60.0
+cam3 Exposure: pedido 0.0  real -1.0
+cam3 Brightness: pedido 30.0  real 30.0
+cam3 Contrast: pedido 100.0  real 60.0

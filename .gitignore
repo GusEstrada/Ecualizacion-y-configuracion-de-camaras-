@@ -1,3 +1,8 @@
 __pycache__/
-pruebas_cam/
+pruebas_cam/*
+!pruebas_cam/*.txt
+!pruebas_cam/cam_0/
+!pruebas_cam/cam_0/*.png
+!pruebas_cam/cam_3/
+!pruebas_cam/cam_3/*.png
 diagnostico_cam*.png
